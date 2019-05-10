@@ -92,6 +92,12 @@ class AlarmsAdapter(activity: SimpleActivity, var alarms: ArrayList<Alarm>, val 
             alarm_label.setTextColor(textColor)
             alarm_label.beVisibleIf(alarm.label.isNotEmpty())
 
+            var childrenNo = context.dbHelper.getChildAlarms(alarm.id).size
+            alarm_children.setTextColor(textColor)
+            alarm_children.text = ""
+            if(childrenNo > 0)
+                alarm_children.text = resources.getString(R.string.has_children, childrenNo)
+
             alarm_switch.isChecked = alarm.isEnabled
             alarm_switch.setColors(textColor, adjustedPrimaryColor, backgroundColor)
             alarm_switch.setOnCheckedChangeListener { buttonView, isChecked ->

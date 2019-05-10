@@ -67,7 +67,7 @@ class AlarmFragment : Fragment(), ToggleAlarmInterface {
     }
 
     private fun setupAlarms() {
-        alarms = context?.dbHelper?.getAlarms() ?: return
+        alarms = ArrayList(context?.dbHelper?.getAlarms()) ?: return
         val currAdapter = view.alarms_list.adapter
         if (currAdapter == null) {
             AlarmsAdapter(activity as SimpleActivity, alarms, this, view.alarms_list) {
