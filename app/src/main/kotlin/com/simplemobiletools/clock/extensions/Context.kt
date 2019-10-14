@@ -299,13 +299,13 @@ fun Context.getTimerNotification(pendingIntent: PendingIntent, addDeleteIntent: 
             .setAutoCancel(true)
             .setSound(Uri.parse(soundUri), AudioManager.STREAM_ALARM)
             .setChannelId(channelId)
-            .addAction(R.drawable.ic_cross, getString(R.string.dismiss), if (addDeleteIntent) reminderActivityIntent else getHideTimerPendingIntent())
+            .addAction(R.drawable.ic_cross_vector, getString(R.string.dismiss), if (addDeleteIntent) reminderActivityIntent else getHideTimerPendingIntent())
 
     if (addDeleteIntent) {
         builder.setDeleteIntent(reminderActivityIntent)
     }
 
-    builder.setVisibility(Notification.VISIBILITY_PUBLIC)
+    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
     if (config.timerVibrate) {
         val vibrateArray = LongArray(2) { 500 }
@@ -362,17 +362,17 @@ fun Context.getAlarmNotification(pendingIntent: PendingIntent, alarm: Alarm): No
     val builder = NotificationCompat.Builder(this)
             .setContentTitle(label)
             .setContentText(getFormattedTime(getPassedSeconds(), false, false))
-            .setSmallIcon(R.drawable.ic_alarm)
+            .setSmallIcon(R.drawable.ic_alarm_vector)
             .setContentIntent(pendingIntent)
             .setPriority(Notification.PRIORITY_HIGH)
             .setDefaults(Notification.DEFAULT_LIGHTS)
             .setAutoCancel(true)
             .setSound(Uri.parse(soundUri), AudioManager.STREAM_ALARM)
             .setChannelId(channelId)
-            .addAction(R.drawable.ic_snooze, getString(R.string.snooze), getSnoozePendingIntent(alarm))
-            .addAction(R.drawable.ic_cross, getString(R.string.dismiss), getHideAlarmPendingIntent(alarm))
+            .addAction(R.drawable.ic_snooze_vector, getString(R.string.snooze), getSnoozePendingIntent(alarm))
+            .addAction(R.drawable.ic_cross_vector, getString(R.string.dismiss), getHideAlarmPendingIntent(alarm))
 
-    builder.setVisibility(Notification.VISIBILITY_PUBLIC)
+    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
     if (alarm.vibrate) {
         val vibrateArray = LongArray(2) { 500 }

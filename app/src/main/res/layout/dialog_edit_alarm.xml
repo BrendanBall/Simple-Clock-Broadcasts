@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:clickable="false"
-                android:drawableLeft="@drawable/ic_vibrate"
+                android:drawableLeft="@drawable/ic_vibrate_vector"
                 android:drawablePadding="@dimen/normal_margin"
                 android:text="@string/vibrate"/>
 
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/edit_alarm_vibrate_holder"
             android:background="?attr/selectableItemBackground"
-            android:drawableLeft="@drawable/ic_bell"
+            android:drawableLeft="@drawable/ic_bell_vector"
             android:drawablePadding="@dimen/normal_margin"
             android:paddingLeft="@dimen/tiny_margin"
             android:paddingTop="@dimen/normal_margin"
@@ -75,7 +75,7 @@
             android:layout_marginLeft="@dimen/tiny_margin"
             android:layout_marginRight="@dimen/tiny_margin"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_label"/>
+            android:src="@drawable/ic_label_vector"/>
 
         <com.simplemobiletools.commons.views.MyEditText
             android:id="@+id/edit_alarm_label"
@@ -123,7 +123,7 @@
             android:id="@+id/rc_holder_child_alarms"
             tools:context=".MainActivity">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:visibility="visible"
                 android:id="@+id/rc_child_alarms"
                 android:layout_width="match_parent"

@@ -3,10 +3,10 @@ package com.simplemobiletools.clock.dialogs
 import android.app.TimePickerDialog
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.activities.SimpleActivity
 import com.simplemobiletools.clock.adapters.ChildAlarmsAdapter
