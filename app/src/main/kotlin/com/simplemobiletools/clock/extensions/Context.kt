@@ -34,6 +34,10 @@ import com.simplemobiletools.commons.helpers.SILENT
 import com.simplemobiletools.commons.helpers.isOreoPlus
 import java.util.*
 import kotlin.math.pow
+import android.app.PendingIntent
+import android.util.Log
+import kotlin.collections.ArrayList
+
 
 val Context.config: Config get() = Config.newInstance(applicationContext)
 
@@ -86,9 +90,22 @@ fun Context.scheduleNextAlarm(alarm: Alarm, showToast: Boolean) {
         val currentDay = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7
         val isCorrectDay = alarm.days and 2.0.pow(currentDay).toInt() != 0
         val currentTimeInMinutes = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
-        if (isCorrectDay && (alarm.timeInMinutes > currentTimeInMinutes || i > 0)) {
+        if (isCorrectDay && (alarm.timeInMinutes > currentTimeInMinutes || i > 0) ) {
             val triggerInMinutes = alarm.timeInMinutes - currentTimeInMinutes + (i * DAY_MINUTES)
             setupAlarmClock(alarm, triggerInMinutes * 60 - calendar.get(Calendar.SECOND))
+            val children = dbHelper.getChildAlarms(alarm.id)
+            for (child in children){
+                val triggerInMinutes = child.timeInMinutes - currentTimeInMinutes + (i * DAY_MINUTES)
+                setupAlarmClock(child, triggerInMinutes * 60 - calendar.get(Calendar.SECOND))
+            }
+            if(!alarm.isChild) {
+                val intent = Intent();
+                intent.setAction("com.simplemobiletools.NEW_ALARM")
+                intent.putExtra("minutes", alarm.timeInMinutes)
+                intent.putExtra("days", alarm.days)
+                intent.putExtra("id", alarm.id)
+                applicationContext.sendBroadcast(intent)
+            }
 
             if (showToast) {
                 showRemainingTimeMessage(triggerInMinutes)
@@ -109,6 +126,10 @@ fun Context.setupAlarmClock(alarm: Alarm, triggerInSeconds: Int) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val targetMS = System.currentTimeMillis() + triggerInSeconds * 1000
     AlarmManagerCompat.setAlarmClock(alarmManager, targetMS, getOpenAlarmTabIntent(), getAlarmIntent(alarm))
+//    val children = dbHelper.getChildAlarms(alarm.id)
+//    for (child in children){
+//        AlarmManagerCompat.setAlarmClock(alarmManager, targetMS, getOpenAlarmTabIntent(), getAlarmIntent(child))
+//    }
 }
 
 fun Context.getOpenAlarmTabIntent(): PendingIntent {
@@ -131,7 +152,19 @@ fun Context.getAlarmIntent(alarm: Alarm): PendingIntent {
 
 fun Context.cancelAlarmClock(alarm: Alarm) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+    val children = dbHelper.getChildAlarms(alarm.id)
     alarmManager.cancel(getAlarmIntent(alarm))
+    for (child in children){
+        alarmManager.cancel(getAlarmIntent(child))
+    }
+
+    val intent = Intent();
+    intent.setAction("com.simplemobiletools.CANCEL_ALARM")
+    intent.putExtra("minutes", alarm.timeInMinutes)
+    intent.putExtra("days", alarm.days)
+    intent.putExtra("id", alarm.id)
+    applicationContext.sendBroadcast(intent)
+
 }
 
 fun Context.hideNotification(id: Int) {
@@ -279,7 +312,7 @@ fun Context.getTimerNotification(pendingIntent: PendingIntent, addDeleteIntent: 
         builder.setDeleteIntent(reminderActivityIntent)
     }
 
-    builder.setVisibility(Notification.VISIBILITY_PUBLIC)
+    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
     if (config.timerVibrate) {
         val vibrateArray = LongArray(2) { 500 }
@@ -346,7 +379,7 @@ fun Context.getAlarmNotification(pendingIntent: PendingIntent, alarm: Alarm): No
             .addAction(R.drawable.ic_snooze_vector, getString(R.string.snooze), getSnoozePendingIntent(alarm))
             .addAction(R.drawable.ic_cross_vector, getString(R.string.dismiss), getHideAlarmPendingIntent(alarm))
 
-    builder.setVisibility(Notification.VISIBILITY_PUBLIC)
+    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
     if (alarm.vibrate) {
         val vibrateArray = LongArray(2) { 500 }

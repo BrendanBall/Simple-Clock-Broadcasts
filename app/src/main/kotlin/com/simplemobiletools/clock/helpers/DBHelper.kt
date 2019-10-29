@@ -12,7 +12,7 @@ import com.simplemobiletools.clock.models.Alarm
 import com.simplemobiletools.commons.extensions.getIntValue
 import com.simplemobiletools.commons.extensions.getStringValue
 import com.simplemobiletools.commons.helpers.*
-import java.util.*
+import kotlin.collections.ArrayList
 
 class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
     private val ALARMS_TABLE_NAME = "contacts"
@@ -24,6 +24,8 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
     private val COL_SOUND_TITLE = "sound_title"
     private val COL_SOUND_URI = "sound_uri"
     private val COL_LABEL = "label"
+    private val COL_PARENT_ID = "parent_id"
+    private val COL_IS_CHLID = "is_child"
 
     private val mDb = writableDatabase
 
@@ -42,7 +44,8 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE $ALARMS_TABLE_NAME ($COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COL_TIME_IN_MINUTES INTEGER, $COL_DAYS INTEGER, " +
-                "$COL_IS_ENABLED INTEGER, $COL_VIBRATE INTEGER, $COL_SOUND_TITLE TEXT, $COL_SOUND_URI TEXT, $COL_LABEL TEXT)")
+                "$COL_IS_ENABLED INTEGER, $COL_VIBRATE INTEGER, $COL_SOUND_TITLE TEXT, $COL_SOUND_URI TEXT, $COL_LABEL TEXT, $COL_PARENT_ID INTEGER, ${COL_IS_CHLID} INTEGER)")
+
         insertInitialAlarms(db)
     }
 
@@ -72,6 +75,7 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
 
     fun updateAlarmEnabledState(id: Int, isEnabled: Boolean): Boolean {
         val selectionArgs = arrayOf(id.toString())
+        selectionArgs.plus(id.toString())
         val values = ContentValues()
         values.put(COL_IS_ENABLED, isEnabled)
         val selection = "$COL_ID = ?"
@@ -83,14 +87,20 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
             context.cancelAlarmClock(it)
         }
 
+        var tmpAlarms: ArrayList<Alarm> = ArrayList()
+        alarms.forEach{
+            tmpAlarms.addAll(getChildAlarms(it.id))
+        }
+        alarms.addAll(tmpAlarms)
+
         val args = TextUtils.join(", ", alarms.map { it.id.toString() })
         val selection = "$ALARMS_TABLE_NAME.$COL_ID IN ($args)"
         mDb.delete(ALARMS_TABLE_NAME, selection, null)
     }
 
-    fun getAlarmWithId(id: Int) = getAlarms().firstOrNull { it.id == id }
+    fun getAlarmWithId(id: Int) = getAllAlarms().firstOrNull { it.id == id }
 
-    fun getAlarmsWithUri(uri: String) = getAlarms().filter { it.soundUri == uri }
+    fun getAlarmsWithUri(uri: String) = getAllAlarms().filter { it.soundUri == uri }
 
     private fun fillAlarmContentValues(alarm: Alarm): ContentValues {
         return ContentValues().apply {
@@ -101,17 +111,23 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
             put(COL_SOUND_TITLE, alarm.soundTitle)
             put(COL_SOUND_URI, alarm.soundUri)
             put(COL_LABEL, alarm.label)
+            put(COL_PARENT_ID, alarm.parentId)
+            put(COL_IS_CHLID, alarm.isChild)
         }
     }
 
-    fun getEnabledAlarms() = getAlarms().filter { it.isEnabled }
+    fun getEnabledAlarms() = getAllAlarms().filter { it.isEnabled }
 
-    fun getAlarms(): ArrayList<Alarm> {
+    fun getChildAlarms(id: Int) = getAllAlarms().filter { it.parentId == id }
+
+    fun getAlarms() = getAllAlarms() .filter { it.parentId == -1}
+
+    fun getAllAlarms(): ArrayList<Alarm> {
         val alarms = ArrayList<Alarm>()
-        val cols = arrayOf(COL_ID, COL_TIME_IN_MINUTES, COL_DAYS, COL_IS_ENABLED, COL_VIBRATE, COL_SOUND_TITLE, COL_SOUND_URI, COL_LABEL)
+        val cols = arrayOf(COL_ID, COL_TIME_IN_MINUTES, COL_DAYS, COL_IS_ENABLED, COL_VIBRATE, COL_SOUND_TITLE, COL_SOUND_URI, COL_LABEL, COL_PARENT_ID, COL_IS_CHLID)
         var cursor: Cursor? = null
         try {
-            cursor = mDb.query(ALARMS_TABLE_NAME, cols, null, null, null, null, null)
+            cursor = mDb.query(ALARMS_TABLE_NAME, cols, null,null, null, null, null, null)
             if (cursor?.moveToFirst() == true) {
                 do {
                     try {
@@ -123,10 +139,12 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
                         val soundTitle = cursor.getStringValue(COL_SOUND_TITLE)
                         val soundUri = cursor.getStringValue(COL_SOUND_URI)
                         val label = cursor.getStringValue(COL_LABEL)
-
-                        val alarm = Alarm(id, timeInMinutes, days, isEnabled, vibrate, soundTitle, soundUri, label)
+                        val parentId =  cursor.getIntValue(COL_PARENT_ID)
+                        val isChild = cursor.getIntValue(COL_IS_CHLID) == 1
+                        val alarm = Alarm(id, timeInMinutes, days, isEnabled, vibrate, soundTitle, soundUri, label, parentId, isChild)
                         alarms.add(alarm)
-                    } catch (e: Exception) {
+                    } catch (e: Throwable) {
+                        print (e)
                         continue
                     }
                 } while (cursor.moveToNext())

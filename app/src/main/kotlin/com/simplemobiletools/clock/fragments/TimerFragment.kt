@@ -270,7 +270,7 @@ class TimerFragment : Fragment() {
                 .setAutoCancel(true)
                 .setChannelId(channelId)
 
-        builder.setVisibility(Notification.VISIBILITY_PUBLIC)
+        builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
         notificationManager.notify(TIMER_NOTIF_ID, builder.build())
     }
 

@@ -3,10 +3,13 @@ package com.simplemobiletools.clock.dialogs
 import android.app.TimePickerDialog
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
-import androidx.appcompat.app.AlertDialog
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.activities.SimpleActivity
+import com.simplemobiletools.clock.adapters.ChildAlarmsAdapter
 import com.simplemobiletools.clock.extensions.*
 import com.simplemobiletools.clock.helpers.PICK_AUDIO_FILE_INTENT_ID
 import com.simplemobiletools.clock.models.Alarm
@@ -15,23 +18,29 @@ import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.commons.helpers.ALARM_SOUND_TYPE_ALARM
 import com.simplemobiletools.commons.models.AlarmSound
 import kotlinx.android.synthetic.main.dialog_edit_alarm.view.*
+import kotlin.collections.ArrayList
 
 class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callback: (alarmId: Int) -> Unit) {
     private val view = activity.layoutInflater.inflate(R.layout.dialog_edit_alarm, null)
     private val textColor = activity.config.textColor
-
+    var childAlarmsAdapter: ChildAlarmsAdapter
+    private var cachedChildAlarms: ArrayList<Alarm> = arrayListOf()
     init {
         updateAlarmTime()
-
         view.apply {
             edit_alarm_time.setOnClickListener {
                 TimePickerDialog(context, context.getDialogTheme(), timeSetListener, alarm.timeInMinutes / 60, alarm.timeInMinutes % 60, context.config.use24HourFormat).show()
             }
 
+            ib_silent_alarm_info.setOnClickListener {
+                val fm = activity.supportFragmentManager
+                val infoFragment = SilentAlarmInfoDialog()
+                infoFragment.show(fm,"SilentAlarmDialog")
+            }
+
             edit_alarm_sound.colorLeftDrawable(textColor)
             edit_alarm_sound.text = alarm.soundTitle
-            edit_alarm_sound.setOnClickListener {
-                SelectAlarmSoundDialog(activity, alarm.soundUri, AudioManager.STREAM_ALARM, PICK_AUDIO_FILE_INTENT_ID, ALARM_SOUND_TYPE_ALARM, true,
+            edit_alarm_sound.setOnClickListener { SelectAlarmSoundDialog(activity, alarm.soundUri, AudioManager.STREAM_ALARM, PICK_AUDIO_FILE_INTENT_ID, ALARM_SOUND_TYPE_ALARM, true,
                         onAlarmPicked = {
                             if (it != null) {
                                 updateSelectedAlarmSound(it)
@@ -55,11 +64,23 @@ class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callba
             edit_alarm_label_image.applyColorFilter(textColor)
             edit_alarm_label.setText(alarm.label)
 
+            var rcChildAlarm = findViewById<RecyclerView>(R.id.rc_child_alarms)
+            rcChildAlarm.layoutManager = LinearLayoutManager(this.context)
+            childAlarmsAdapter = ChildAlarmsAdapter(ArrayList(activity.dbHelper.getChildAlarms(alarm.id)), ArrayList(activity.dbHelper.getChildAlarms(alarm.id)).indices.toList(), alarm, this.context)
+            cachedChildAlarms = ArrayList(childAlarmsAdapter.items)
+            rcChildAlarm.adapter = childAlarmsAdapter
+
+            button_add_child_alarm.setOnClickListener {
+                childAlarmsAdapter.addItem(Alarm(0, alarm.timeInMinutes, alarm.days, true, false, "No Sound", "silent", "Child", alarm.id, true))
+            }
+
             val dayLetters = activity.resources.getStringArray(R.array.week_day_letters).toList() as ArrayList<String>
             val dayIndexes = arrayListOf(0, 1, 2, 3, 4, 5, 6)
             if (activity.config.isSundayFirst) {
                 dayIndexes.moveLastItemToFront()
             }
+
+
 
             dayIndexes.forEach {
                 val pow = Math.pow(2.0, it.toDouble()).toInt()
@@ -95,18 +116,40 @@ class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callba
                                 activity.toast(R.string.no_days_selected)
                                 return@setOnClickListener
                             }
-
                             alarm.label = view.edit_alarm_label.value
-
                             var alarmId = alarm.id
                             if (alarm.id == 0) {
+
                                 alarmId = activity.dbHelper.insertAlarm(alarm)
+                                childAlarmsAdapter.items.forEach{
+                                    it.parentId = alarmId
+                                    it.days = alarm.days
+                                    activity.dbHelper.insertAlarm(it)
+                                }
+
                                 if (alarmId == -1) {
-                                    activity.toast(R.string.unknown_error_occurred)
+                                    activity.toast("Unknown error")
                                 }
                             } else {
                                 if (!activity.dbHelper.updateAlarm(alarm)) {
-                                    activity.toast(R.string.unknown_error_occurred)
+                                    activity.toast("Unknown error")
+                                }
+
+                                val alarmsToDelete = ArrayList(childAlarmsAdapter.alarmsToDelete)
+                                val alarmsToProcess= ArrayList(childAlarmsAdapter.items).filter{ !alarmsToDelete.contains(it) }
+                                activity.dbHelper.deleteAlarms(ArrayList( alarmsToDelete))
+                                alarmsToProcess.forEach{
+                                    //Update days of childalarms
+                                    it.days = alarm.days
+
+                                    // disable child alarms if parent is disabled
+                                    if(!alarm.isEnabled)
+                                        it.isEnabled = false
+
+                                    if(activity.dbHelper.getAlarmWithId(it.id) == null)
+                                        activity.dbHelper.insertAlarm(it)
+                                    else
+                                        activity.dbHelper.updateAlarm(it)
                                 }
                             }
                             callback(alarmId)
