@@ -312,7 +312,7 @@ fun Context.getTimerNotification(pendingIntent: PendingIntent, addDeleteIntent: 
         builder.setDeleteIntent(reminderActivityIntent)
     }
 
-    builder.setVisibility(Notification.VISIBILITY_PUBLIC)
+    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
     if (config.timerVibrate) {
         val vibrateArray = LongArray(2) { 500 }
@@ -379,7 +379,7 @@ fun Context.getAlarmNotification(pendingIntent: PendingIntent, alarm: Alarm): No
             .addAction(R.drawable.ic_snooze_vector, getString(R.string.snooze), getSnoozePendingIntent(alarm))
             .addAction(R.drawable.ic_cross_vector, getString(R.string.dismiss), getHideAlarmPendingIntent(alarm))
 
-    builder.setVisibility(Notification.VISIBILITY_PUBLIC)
+    builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
 
     if (alarm.vibrate) {
         val vibrateArray = LongArray(2) { 500 }

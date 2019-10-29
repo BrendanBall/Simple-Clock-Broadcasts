@@ -134,7 +134,7 @@
             android:id="@+id/rc_holder_child_alarms"
             tools:context=".MainActivity">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:visibility="visible"
                 android:id="@+id/rc_child_alarms"
                 android:layout_width="match_parent"
