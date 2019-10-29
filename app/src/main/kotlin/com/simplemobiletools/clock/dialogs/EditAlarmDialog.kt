@@ -128,11 +128,11 @@ class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callba
                                 }
 
                                 if (alarmId == -1) {
-                                    activity.toast("Weird alarm at alarm (-1)")
+                                    activity.toast("Unknown error")
                                 }
                             } else {
                                 if (!activity.dbHelper.updateAlarm(alarm)) {
-                                    activity.toast( "Error updating alarm database")
+                                    activity.toast("Unknown error")
                                 }
 
                                 val alarmsToDelete = ArrayList(childAlarmsAdapter.alarmsToDelete)

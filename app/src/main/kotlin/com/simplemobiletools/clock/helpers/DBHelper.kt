@@ -12,7 +12,6 @@ import com.simplemobiletools.clock.models.Alarm
 import com.simplemobiletools.commons.extensions.getIntValue
 import com.simplemobiletools.commons.extensions.getStringValue
 import com.simplemobiletools.commons.helpers.*
-import java.util.*
 import kotlin.collections.ArrayList
 
 class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_VERSION) {
@@ -46,10 +45,7 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL("CREATE TABLE $ALARMS_TABLE_NAME ($COL_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COL_TIME_IN_MINUTES INTEGER, $COL_DAYS INTEGER, " +
                 "$COL_IS_ENABLED INTEGER, $COL_VIBRATE INTEGER, $COL_SOUND_TITLE TEXT, $COL_SOUND_URI TEXT, $COL_LABEL TEXT, $COL_PARENT_ID INTEGER, ${COL_IS_CHLID} INTEGER)")
-<<<<<<< HEAD
-=======
 
->>>>>>> 34d2da1ef08f2e77068441371dae50edfa5e95f1
         insertInitialAlarms(db)
     }
 
@@ -78,7 +74,6 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
     }
 
     fun updateAlarmEnabledState(id: Int, isEnabled: Boolean): Boolean {
-        //val selectionArgs = arrayOf(getChildAlarms(id).forEach{ it.id }.toString())
         val selectionArgs = arrayOf(id.toString())
         selectionArgs.plus(id.toString())
         val values = ContentValues()
