@@ -1,4 +1,35 @@
-# Simple Clock
+# Simple Clock with Broadcast events
+This is a fork of the SimpleMobileTools Simple Clock application. I have added broadcast events to alarms for home automation purposes, the broadcasts are called silent alarms.
+
+A silent alarm is a non audible alarm, represented as a broadcast to the system which can be processed by other applications such as Tasker, Easer, Broadcast to mqtt or other tools for scenarios such as home automation. 
+
+Following broadcasts are emitted: 
+- com.simplemobiletools.ALARM_SET : when a new Alarm is created.
+- com.simplemobiletools.ALARM_GOING_TO_RING : when a silent alarm is triggered - only if the main alarm is enabled.
+- com.simplemobiletools.ALARM_IS_ACTIVE when an audible alarm is active.
+- com.simplemobiletools.ALARM_SNOOZED when an audible alarm has been snoozed.
+- com.simplemobiletools.ALARM_DISABLED when an audible alarm has been disabled.
+
+All broadcasts contain the same payload with the attributes:
+- label
+- hours  
+- minutes
+- days
+- id
+
+
+
+
+## Example usage scenarios
+I use the silent alarms to trigger actions before, during, or after an alarm rings. 
+
+- Trigger a wakeup light before the audible alarm rings
+- Trigger a wakeup routine once the audible alarm rings
+- Have automated actions if you use the snooze button to often :-)
+- ... 
+
+
+# Original Simple Clock readme
 <img alt="Logo" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="80" />
 
 The app has multiple functions related to timing.
