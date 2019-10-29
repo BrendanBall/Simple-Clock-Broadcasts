@@ -103,11 +103,22 @@
 
             <Button
                 android:id="@+id/button_add_child_alarm"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/normal_margin"
+                android:textAllCaps="false"
+                android:gravity="left|center_vertical"
                 android:text="@string/broadcast_before_alarm"
-                android:visibility="visible" />
+                android:drawablePadding="@dimen/normal_margin"
+                android:drawableLeft="@drawable/ic_bell_vector"
+                />
+
+            <ImageButton
+                android:id="@+id/ib_silent_alarm_info"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_info"
+                android:layout_alignParentRight="true"
+                />
         </RelativeLayout>
 
 

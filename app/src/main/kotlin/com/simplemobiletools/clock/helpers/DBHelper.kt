@@ -74,7 +74,8 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
     }
 
     fun updateAlarmEnabledState(id: Int, isEnabled: Boolean): Boolean {
-        val selectionArgs = arrayOf(getChildAlarms(id).forEach{ it.id }.toString())
+        //val selectionArgs = arrayOf(getChildAlarms(id).forEach{ it.id }.toString())
+        val selectionArgs = arrayOf(id.toString())
         selectionArgs.plus(id.toString())
         val values = ContentValues()
         values.put(COL_IS_ENABLED, isEnabled)

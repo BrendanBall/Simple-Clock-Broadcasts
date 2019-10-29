@@ -24,13 +24,19 @@ import kotlin.collections.ArrayList
 class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callback: (alarmId: Int) -> Unit) {
     private val view = activity.layoutInflater.inflate(R.layout.dialog_edit_alarm, null)
     private val textColor = activity.config.textColor
-    protected lateinit var childAlarmsAdapter: ChildAlarmsAdapter;
-    private var cachedChildAlarms: ArrayList<Alarm> = arrayListOf();
+    var childAlarmsAdapter: ChildAlarmsAdapter
+    private var cachedChildAlarms: ArrayList<Alarm> = arrayListOf()
     init {
         updateAlarmTime()
         view.apply {
             edit_alarm_time.setOnClickListener {
                 TimePickerDialog(context, context.getDialogTheme(), timeSetListener, alarm.timeInMinutes / 60, alarm.timeInMinutes % 60, context.config.use24HourFormat).show()
+            }
+
+            ib_silent_alarm_info.setOnClickListener {
+                val fm = activity.supportFragmentManager
+                val infoFragment = SilentAlarmInfoDialog()
+                infoFragment.show(fm,"SilentAlarmDialog")
             }
 
             edit_alarm_sound.colorLeftDrawable(textColor)
@@ -123,18 +129,24 @@ class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callba
                                 }
 
                                 if (alarmId == -1) {
-                                    activity.toast(R.string.unknown_error_occurred)
+                                    activity.toast("Weird alarm at alarm (-1)")
                                 }
                             } else {
                                 if (!activity.dbHelper.updateAlarm(alarm)) {
-                                    activity.toast(R.string.unknown_error_occurred)
+                                    activity.toast( "Error updating alarm database")
                                 }
 
-                                val alarmsToDelete = ArrayList(childAlarmsAdapter.items).filter {!it.isEnabled}
-                                val alarmsToProcess= ArrayList(childAlarmsAdapter.items).filter {it.isEnabled}
+                                val alarmsToDelete = ArrayList(childAlarmsAdapter.alarmsToDelete)
+                                val alarmsToProcess= ArrayList(childAlarmsAdapter.items).filter{ !alarmsToDelete.contains(it) }
                                 activity.dbHelper.deleteAlarms(ArrayList( alarmsToDelete))
                                 alarmsToProcess.forEach{
+                                    //Update days of childalarms
                                     it.days = alarm.days
+
+                                    // disable child alarms if parent is disabled
+                                    if(!alarm.isEnabled)
+                                        it.isEnabled = false
+
                                     if(activity.dbHelper.getAlarmWithId(it.id) == null)
                                         activity.dbHelper.insertAlarm(it)
                                     else

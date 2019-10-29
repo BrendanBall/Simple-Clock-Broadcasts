@@ -47,8 +47,27 @@
 
         This app is just one piece of a bigger series of apps. You can find the rest of them at https://www.simplemobiletools.com
     </string>
-    <string name="broadcast_before_alarm">Send silent Alarm prior to ringing</string>
+    <string name="broadcast_before_alarm">Create silent alarm</string>
     <string name="has_children">%d silent alarms</string>
+    <string name="silent_alarm_info">
+        A silent alarm is a non audible alarm, represented as a broadcast to the system which can be processed by other applications such as Tasker, Easer, Broadcast to mqtt or other tools for scenarios such as home automation. \n
+        \n
+        Following broadcasts are emitted: \n\n
+        \"com.simplemobiletools.ALARM_SET\" when a new Alarm is created.\n\n
+        \"com.simplemobiletools.ALARM_GOING_TO_RING\" when a silent alarm is triggered - only if the main alarm is enabled.\n\n
+        \"com.simplemobiletools.ALARM_IS_ACTIVE\" when an audible alarm is active.\n\n
+        \"com.simplemobiletools.ALARM_SNOOZED\" when an audible alarm has been snoozed.\n\n
+        \"com.simplemobiletools.ALARM_DISABLED\" when an audible alarm has been disabled.\n\n
+
+        All broadcasts contain the same payload with the attributes:\n
+        - label \n
+        - hours  \n
+        - minutes\n
+        - days\n
+        - id
+    </string>
+
+    <string name="silent_alarm_dialog_title">What is a silent alarm?</string>
 
 
     <!--

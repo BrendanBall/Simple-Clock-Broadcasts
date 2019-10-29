@@ -35,6 +35,7 @@ import com.simplemobiletools.commons.helpers.isOreoPlus
 import java.util.*
 import kotlin.math.pow
 import android.app.PendingIntent
+import android.util.Log
 import kotlin.collections.ArrayList
 
 
@@ -92,6 +93,11 @@ fun Context.scheduleNextAlarm(alarm: Alarm, showToast: Boolean) {
         if (isCorrectDay && (alarm.timeInMinutes > currentTimeInMinutes || i > 0) ) {
             val triggerInMinutes = alarm.timeInMinutes - currentTimeInMinutes + (i * DAY_MINUTES)
             setupAlarmClock(alarm, triggerInMinutes * 60 - calendar.get(Calendar.SECOND))
+            val children = dbHelper.getChildAlarms(alarm.id)
+            for (child in children){
+                val triggerInMinutes = child.timeInMinutes - currentTimeInMinutes + (i * DAY_MINUTES)
+                setupAlarmClock(child, triggerInMinutes * 60 - calendar.get(Calendar.SECOND))
+            }
             if(!alarm.isChild) {
                 val intent = Intent();
                 intent.setAction("com.simplemobiletools.NEW_ALARM")
@@ -100,6 +106,7 @@ fun Context.scheduleNextAlarm(alarm: Alarm, showToast: Boolean) {
                 intent.putExtra("id", alarm.id)
                 applicationContext.sendBroadcast(intent)
             }
+
             if (showToast) {
                 showRemainingTimeMessage(triggerInMinutes)
             }
@@ -119,10 +126,10 @@ fun Context.setupAlarmClock(alarm: Alarm, triggerInSeconds: Int) {
     val alarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
     val targetMS = System.currentTimeMillis() + triggerInSeconds * 1000
     AlarmManagerCompat.setAlarmClock(alarmManager, targetMS, getOpenAlarmTabIntent(), getAlarmIntent(alarm))
-    val children = dbHelper.getChildAlarms(alarm.id)
-    for (child in children){
-        AlarmManagerCompat.setAlarmClock(alarmManager, targetMS, getOpenAlarmTabIntent(), getAlarmIntent(child))
-    }
+//    val children = dbHelper.getChildAlarms(alarm.id)
+//    for (child in children){
+//        AlarmManagerCompat.setAlarmClock(alarmManager, targetMS, getOpenAlarmTabIntent(), getAlarmIntent(child))
+//    }
 }
 
 fun Context.getOpenAlarmTabIntent(): PendingIntent {
