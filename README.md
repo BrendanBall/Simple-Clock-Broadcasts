@@ -21,12 +21,16 @@ All broadcasts contain the same payload with the attributes:
 
 
 ## Example usage scenarios
-I use the silent alarms to trigger actions before, during, or after an alarm rings. 
+Forward broadcasts and the respective payload to an mqtt broker and have your smart home such as home assistant react to your alarms dynamically with automations such as:
 
 - Trigger a wakeup light before the audible alarm rings
 - Trigger a wakeup routine once the audible alarm rings
 - Have automated actions if you use the snooze button to often :-)
 - ... 
+
+## Disclaimer
+
+- I am not responsible, if the app messes up and you are late for anything ;) 
 
 
 # Original Simple Clock readme
