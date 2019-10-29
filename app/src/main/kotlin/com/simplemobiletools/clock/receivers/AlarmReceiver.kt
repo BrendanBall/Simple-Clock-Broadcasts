@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.util.Log
 import com.simplemobiletools.clock.activities.ReminderActivity
 import com.simplemobiletools.clock.extensions.*
 import com.simplemobiletools.clock.helpers.ALARM_ID
@@ -15,11 +16,13 @@ class AlarmReceiver : BroadcastReceiver() {
         if(alarm!!.isChild) {
             Intent().also { intent ->
                 intent.setAction("com.simplemobiletools.ALARM_GOING_TO_RING")
-                intent.putExtra("minutes", alarm?.timeInMinutes)
+                intent.putExtra("hours", alarm?.timeInMinutes / 60)
+                intent.putExtra("minutes", alarm?.timeInMinutes % 60)
                 intent.putExtra("days", alarm?.days)
                 intent.putExtra("id", alarm?.id)
-                intent.putExtra("custom_payload", alarm?.label)
+                intent.putExtra("label", alarm?.label)
                 context.sendBroadcast(intent)
+                Log.i("SENT_BROADCAST", "ALARM_GOING_TO_RING")
             }
         }
         else {
@@ -37,11 +40,13 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
             }
             Intent().also { intent ->
-                intent.setAction("com.simplemobiletools.ALARM_IS_RINGING")
-                intent.putExtra("minutes", alarm.timeInMinutes)
+                intent.setAction("com.simplemobiletools.ALARM_IS_ACTIVE")
+                intent.putExtra("hours", alarm?.timeInMinutes / 60)
+                intent.putExtra("minutes", alarm?.timeInMinutes % 60)
                 intent.putExtra("days", alarm.days)
                 intent.putExtra("id", alarm.id)
                 context.sendBroadcast(intent)
+                Log.i("SENT_BROADCAST", "ALARM_IS_RINGING")
             }
         }
     }

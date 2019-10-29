@@ -6,6 +6,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
@@ -118,12 +119,32 @@ class ReminderActivity : SimpleActivity() {
                         if (!didVibrate) {
                             reminder_draggable.performHapticFeedback()
                             didVibrate = true
+                            Intent().also { intent ->
+                                intent.setAction("com.simplemobiletools.ALARM_DISABLED")
+                                intent.putExtra("hours", alarm?.timeInMinutes!! / 60)
+                                intent.putExtra("minutes", alarm?.timeInMinutes!! % 60)
+                                intent.putExtra("days", alarm?.days)
+                                intent.putExtra("id", alarm?.id)
+                                intent.putExtra("label", alarm?.label)
+                                sendBroadcast(intent)
+                                Log.i("SENT_BROADCAST", "ALARM_DISABLED")
+                            }
                             finishActivity()
                         }
                     } else if (reminder_draggable.x <= minDragX + 50f) {
                         if (!didVibrate) {
                             reminder_draggable.performHapticFeedback()
                             didVibrate = true
+                            Intent().also { intent ->
+                                intent.setAction("com.simplemobiletools.ALARM_SNOOZED")
+                                intent.putExtra("hours", alarm?.timeInMinutes!! / 60)
+                                intent.putExtra("minutes", alarm?.timeInMinutes!! % 60)
+                                intent.putExtra("days", alarm?.days)
+                                intent.putExtra("id", alarm?.id)
+                                intent.putExtra("label", alarm?.label)
+                                sendBroadcast(intent)
+                                Log.i("SENT_BROADCAST", "ALARM_SNOOZED")
+                            }
                             snoozeAlarm()
                         }
                     }
