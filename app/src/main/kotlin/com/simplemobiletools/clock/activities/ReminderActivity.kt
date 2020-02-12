@@ -1,9 +1,14 @@
 package com.simplemobiletools.clock.activities
 
+import android.app.Activity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -93,6 +98,7 @@ class ReminderActivity : SimpleActivity() {
             initialDraggableX = reminder_draggable.left.toFloat()
         }
 
+
         reminder_draggable.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {
@@ -131,6 +137,11 @@ class ReminderActivity : SimpleActivity() {
                             }
                             finishActivity()
                         }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            val context = applicationContext
+                            val mgr = context.getSystemService(NotificationManager::class.java)
+                            mgr.cancelAll()
+                        }
                     } else if (reminder_draggable.x <= minDragX + 50f) {
                         if (!didVibrate) {
                             reminder_draggable.performHapticFeedback()
@@ -147,6 +158,12 @@ class ReminderActivity : SimpleActivity() {
                             }
                             snoozeAlarm()
                         }
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                            val context = applicationContext
+                            val mgr = context.getSystemService(NotificationManager::class.java)
+                            mgr.cancelAll()
+                        }
+
                     }
                 }
             }

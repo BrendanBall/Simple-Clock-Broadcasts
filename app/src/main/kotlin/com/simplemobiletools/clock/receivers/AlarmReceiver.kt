@@ -1,15 +1,23 @@
 package com.simplemobiletools.clock.receivers
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import android.os.Handler
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.activities.ReminderActivity
 import com.simplemobiletools.clock.extensions.*
 import com.simplemobiletools.clock.helpers.ALARM_ID
 
 class AlarmReceiver : BroadcastReceiver() {
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onReceive(context: Context, intent: Intent) {
         val id = intent.getIntExtra(ALARM_ID, -1)
         val alarm = context.dbHelper.getAlarmWithId(id)
@@ -33,11 +41,40 @@ class AlarmReceiver : BroadcastReceiver() {
                     context.hideNotification(id)
                 }, context.config.alarmMaxReminderSecs * 1000L)
             } else {
-                Intent(context, ReminderActivity::class.java).apply {
-                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    putExtra(ALARM_ID, id)
-                    context.startActivity(this)
+
+                val pi = PendingIntent.getActivity(
+                        context,
+                        0,
+                        Intent(context, ReminderActivity::class.java).apply{
+                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                            putExtra(ALARM_ID, id)
+                        },
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                )
+
+                val builder = NotificationCompat.Builder(context, "Alarm")
+                        .setSmallIcon(R.drawable.ic_alarm_vector)
+                        .setContentTitle("Alarm Active")
+                        .setAutoCancel(true)
+                        .setPriority(NotificationCompat.PRIORITY_HIGH)
+                        .setFullScreenIntent(pi, true)
+
+                val mgr = context.getSystemService(NotificationManager::class.java)
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                    && mgr.getNotificationChannel("Alarm") == null ) {
+                    mgr.createNotificationChannel(
+                            NotificationChannel(
+                                    "Alarm",
+                                    "Alarm",
+                                    NotificationManager.IMPORTANCE_HIGH
+                            )
+                    )
                 }
+
+                mgr.notify(1337, builder.build())
+
+
             }
             Intent().also { intent ->
                 intent.setAction("com.simplemobiletools.ALARM_IS_ACTIVE")
