@@ -23,7 +23,7 @@ class AlarmReceiver : BroadcastReceiver() {
         val alarm = context.dbHelper.getAlarmWithId(id)
         if(alarm!!.isChild) {
             Intent().also { intent ->
-                intent.setAction("com.simplemobiletools.ALARM_GOING_TO_RING")
+                intent.action = "com.simplemobiletools.ALARM_GOING_TO_RING"
                 intent.putExtra("hours", alarm?.timeInMinutes / 60)
                 intent.putExtra("minutes", alarm?.timeInMinutes % 60)
                 intent.putExtra("days", alarm?.days)
@@ -42,37 +42,45 @@ class AlarmReceiver : BroadcastReceiver() {
                 }, context.config.alarmMaxReminderSecs * 1000L)
             } else {
 
-                val pi = PendingIntent.getActivity(
-                        context,
-                        0,
-                        Intent(context, ReminderActivity::class.java).apply{
-                            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                            putExtra(ALARM_ID, id)
-                        },
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                )
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
-                val builder = NotificationCompat.Builder(context, "Alarm")
-                        .setSmallIcon(R.drawable.ic_alarm_vector)
-                        .setContentTitle("Alarm Active")
-                        .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setFullScreenIntent(pi, true)
+                    val mgr = context.getSystemService(NotificationManager::class.java)
 
-                val mgr = context.getSystemService(NotificationManager::class.java)
+                    if (mgr.getNotificationChannel("Alarm") == null ) {
+                        val channel = NotificationChannel("Alarm","Alarm", NotificationManager.IMPORTANCE_HIGH)
+                        channel.setBypassDnd(true)
+                        mgr.createNotificationChannel(channel)
 
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                    && mgr.getNotificationChannel("Alarm") == null ) {
-                    mgr.createNotificationChannel(
-                            NotificationChannel(
-                                    "Alarm",
-                                    "Alarm",
-                                    NotificationManager.IMPORTANCE_HIGH
-                            )
+                    }
+
+                    val pi = PendingIntent.getActivity(
+                            context,
+                            0,
+                            Intent(context, ReminderActivity::class.java).apply{
+                                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                                putExtra(ALARM_ID, id)
+                            },
+                            PendingIntent.FLAG_UPDATE_CURRENT
                     )
-                }
 
-                mgr.notify(1337, builder.build())
+                    val builder = NotificationCompat.Builder(context, "Alarm")
+                            .setSmallIcon(R.drawable.ic_alarm_vector)
+                            .setContentTitle("Alarm Active")
+                            .setAutoCancel(true)
+                            .setPriority(NotificationCompat.PRIORITY_HIGH)
+                            .setCategory(NotificationCompat.CATEGORY_ALARM)
+                            .setFullScreenIntent(pi, true)
+
+
+                    mgr.notify(1337, builder.build())
+                }
+                else {
+                    Intent(context, ReminderActivity::class.java).apply {
+                        addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                        putExtra(ALARM_ID, id)
+                        context.startActivity(this)
+                    }
+                }
 
 
             }
