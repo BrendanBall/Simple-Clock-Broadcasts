@@ -1,9 +1,7 @@
 package com.simplemobiletools.clock.activities
 
-import android.app.Activity
-import android.app.NotificationChannel
+import android.annotation.SuppressLint
 import android.app.NotificationManager
-import android.content.Context
 import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -22,6 +20,7 @@ import com.simplemobiletools.clock.helpers.getPassedSeconds
 import com.simplemobiletools.clock.models.Alarm
 import com.simplemobiletools.commons.extensions.*
 import com.simplemobiletools.commons.helpers.MINUTE_SECONDS
+import com.simplemobiletools.commons.helpers.isOreoPlus
 import kotlinx.android.synthetic.main.activity_reminder.*
 
 class ReminderActivity : SimpleActivity() {
@@ -79,6 +78,7 @@ class ReminderActivity : SimpleActivity() {
         }
     }
 
+    @SuppressLint("NewApi")
     private fun setupAlarmButtons() {
         reminder_stop.beGone()
         reminder_draggable_background.startAnimation(AnimationUtils.loadAnimation(this, R.anim.pulsing_animation))
@@ -137,10 +137,9 @@ class ReminderActivity : SimpleActivity() {
                             }
                             finishActivity()
                         }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            val context = applicationContext
-                            val mgr = context.getSystemService(NotificationManager::class.java)
-                            mgr.cancelAll()
+
+                        if (isOreoPlus()) {
+                            getSystemService(NotificationManager::class.java).cancelAll()
                         }
                     } else if (reminder_draggable.x <= minDragX + 50f) {
                         if (!didVibrate) {
@@ -159,12 +158,9 @@ class ReminderActivity : SimpleActivity() {
                         }
                             snoozeAlarm()
 
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                            val context = applicationContext
-                            val mgr = context.getSystemService(NotificationManager::class.java)
-                            mgr.cancelAll()
+                        if (isOreoPlus()) {
+                            getSystemService(NotificationManager::class.java).cancelAll()
                         }
-
                     }
                 }
             }

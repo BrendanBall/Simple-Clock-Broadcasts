@@ -54,7 +54,7 @@ class AlarmsAdapter(activity: SimpleActivity, var alarms: ArrayList<Alarm>, val 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = createViewHolder(R.layout.item_alarm, parent)
 
-    override fun onBindViewHolder(holder: MyRecyclerViewAdapter.ViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val alarm = alarms[position]
         holder.bindView(alarm, true, true) { itemView, layoutPosition ->
             setupView(itemView, alarm)
@@ -106,7 +106,7 @@ class AlarmsAdapter(activity: SimpleActivity, var alarms: ArrayList<Alarm>, val 
 
             alarm_switch.isChecked = alarm.isEnabled
             alarm_switch.setColors(textColor, adjustedPrimaryColor, backgroundColor)
-            alarm_switch.setOnCheckedChangeListener { buttonView, isChecked ->
+            alarm_switch.setOnClickListener {
                 if (alarm.days > 0) {
                     if (activity.config.wasAlarmWarningShown) {
                         toggleAlarmInterface.alarmToggled(alarm.id, alarm_switch.isChecked)

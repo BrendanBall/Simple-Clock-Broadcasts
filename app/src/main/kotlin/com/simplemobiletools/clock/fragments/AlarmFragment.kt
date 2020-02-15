@@ -1,10 +1,10 @@
 package com.simplemobiletools.clock.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.activities.MainActivity
 import com.simplemobiletools.clock.activities.SimpleActivity
@@ -19,6 +19,7 @@ import com.simplemobiletools.commons.extensions.updateTextColors
 import com.simplemobiletools.commons.models.AlarmSound
 import kotlinx.android.synthetic.main.fragment_alarm.view.*
 import java.util.*
+import kotlin.math.pow
 
 class AlarmFragment : Fragment(), ToggleAlarmInterface {
     private var alarms = ArrayList<Alarm>()
@@ -59,6 +60,12 @@ class AlarmFragment : Fragment(), ToggleAlarmInterface {
             alarm_fab.setOnClickListener {
                 val newAlarm = context.createNewAlarm(DEFAULT_ALARM_MINUTES, 0)
                 newAlarm.isEnabled = true
+
+                val calendar = Calendar.getInstance()
+                calendar.add(Calendar.DAY_OF_WEEK, 1)   // set the next alarm to the next day by default
+                val dayOfWeek = (calendar.get(Calendar.DAY_OF_WEEK) + 5) % 7
+                newAlarm.days = 2.0.pow(dayOfWeek).toInt()
+
                 openEditAlarm(newAlarm)
             }
         }
