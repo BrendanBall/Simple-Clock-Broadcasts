@@ -73,11 +73,12 @@ class AlarmReceiver : BroadcastReceiver() {
                 }
             }
             Intent().also { intent ->
-                intent.setAction("com.simplemobiletools.ALARM_IS_ACTIVE")
+                intent.action = "com.simplemobiletools.ALARM_IS_ACTIVE"
                 intent.putExtra("hours", alarm?.timeInMinutes / 60)
                 intent.putExtra("minutes", alarm?.timeInMinutes % 60)
                 intent.putExtra("days", alarm.days)
                 intent.putExtra("id", alarm.id)
+                intent.putExtra("label", alarm?.label)
                 context.sendBroadcast(intent)
                 Log.i("SENT_BROADCAST", "ALARM_IS_RINGING")
             }

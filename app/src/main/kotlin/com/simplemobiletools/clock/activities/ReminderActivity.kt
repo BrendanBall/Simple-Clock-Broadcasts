@@ -146,18 +146,19 @@ class ReminderActivity : SimpleActivity() {
                         if (!didVibrate) {
                             reminder_draggable.performHapticFeedback()
                             didVibrate = true
-                            Intent().also { intent ->
-                                intent.setAction("com.simplemobiletools.ALARM_SNOOZED")
-                                intent.putExtra("hours", alarm?.timeInMinutes!! / 60)
-                                intent.putExtra("minutes", alarm?.timeInMinutes!! % 60)
-                                intent.putExtra("days", alarm?.days)
-                                intent.putExtra("id", alarm?.id)
-                                intent.putExtra("label", alarm?.label)
-                                sendBroadcast(intent)
-                                Log.i("SENT_BROADCAST", "ALARM_SNOOZED")
-                            }
-                            snoozeAlarm()
                         }
+                        Intent().also { intent ->
+                            intent.setAction("com.simplemobiletools.ALARM_SNOOZED")
+                            intent.putExtra("hours", alarm?.timeInMinutes!! / 60)
+                            intent.putExtra("minutes", alarm?.timeInMinutes!! % 60)
+                            intent.putExtra("days", alarm?.days)
+                            intent.putExtra("id", alarm?.id)
+                            intent.putExtra("label", alarm?.label)
+                            sendBroadcast(intent)
+                            Log.i("SENT_BROADCAST", "ALARM_SNOOZED")
+                        }
+                            snoozeAlarm()
+
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                             val context = applicationContext
                             val mgr = context.getSystemService(NotificationManager::class.java)

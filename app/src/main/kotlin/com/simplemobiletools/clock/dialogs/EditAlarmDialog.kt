@@ -124,6 +124,7 @@ class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callba
                                 childAlarmsAdapter.items.forEach{
                                     it.parentId = alarmId
                                     it.days = alarm.days
+                                    it.label = view.edit_alarm_label.value
                                     activity.dbHelper.insertAlarm(it)
                                 }
 
@@ -141,7 +142,7 @@ class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callba
                                 alarmsToProcess.forEach{
                                     //Update days of childalarms
                                     it.days = alarm.days
-
+                                    it.label = alarm.label
                                     // disable child alarms if parent is disabled
                                     if(!alarm.isEnabled)
                                         it.isEnabled = false
