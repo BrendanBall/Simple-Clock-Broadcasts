@@ -80,7 +80,7 @@ fun Context.getModifiedTimeZoneTitle(id: Int) = getAllTimeZonesModified().firstO
 
 fun Context.createNewAlarm(timeInMinutes: Int, weekDays: Int): Alarm {
     val defaultAlarmSound = getDefaultAlarmSound(ALARM_SOUND_TYPE_ALARM)
-    return Alarm(0, timeInMinutes, weekDays, false, false, defaultAlarmSound.title, defaultAlarmSound.uri, "")
+    return Alarm(0, timeInMinutes, weekDays, isEnabled = false, vibrate = false, soundTitle = defaultAlarmSound.title, soundUri = defaultAlarmSound.uri, label = "")
 }
 
 fun Context.scheduleNextAlarm(alarm: Alarm, showToast: Boolean) {
@@ -99,11 +99,13 @@ fun Context.scheduleNextAlarm(alarm: Alarm, showToast: Boolean) {
                 setupAlarmClock(child, triggerInMinutes * 60 - calendar.get(Calendar.SECOND))
             }
             if(!alarm.isChild) {
-                val intent = Intent();
-                intent.setAction("com.simplemobiletools.NEW_ALARM")
-                intent.putExtra("minutes", alarm.timeInMinutes)
-                intent.putExtra("days", alarm.days)
-                intent.putExtra("id", alarm.id)
+                val intent = Intent()
+                intent.action = NEW_ALARM
+                intent.putExtra("hours", alarm?.timeInMinutes / 60)
+                intent.putExtra("minutes", alarm?.timeInMinutes % 60)
+                intent.putExtra("days", alarm?.days)
+                intent.putExtra("id", alarm?.id)
+                intent.putExtra("label", alarm?.label)
                 applicationContext.sendBroadcast(intent)
             }
 
@@ -158,11 +160,13 @@ fun Context.cancelAlarmClock(alarm: Alarm) {
         alarmManager.cancel(getAlarmIntent(child))
     }
 
-    val intent = Intent();
-    intent.setAction("com.simplemobiletools.CANCEL_ALARM")
-    intent.putExtra("minutes", alarm.timeInMinutes)
-    intent.putExtra("days", alarm.days)
-    intent.putExtra("id", alarm.id)
+    val intent = Intent()
+    intent.action = ALARM_CANCELED
+    intent.putExtra("hours", alarm?.timeInMinutes / 60)
+    intent.putExtra("minutes", alarm?.timeInMinutes % 60)
+    intent.putExtra("days", alarm?.days)
+    intent.putExtra("id", alarm?.id)
+    intent.putExtra("label", alarm?.label)
     applicationContext.sendBroadcast(intent)
 
 }

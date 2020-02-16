@@ -41,6 +41,14 @@ const val SORT_BY_LAP = 1
 const val SORT_BY_LAP_TIME = 2
 const val SORT_BY_TOTAL_TIME = 4
 
+//Broadcast Intents
+
+const val ALARM_GOING_TO_RING = "com.simplemobiletools.ALARM_GOING_TO_RING"
+const val ALARM_DISABLED =      "com.simplemobiletools.ALARM_DISABLED"
+const val ALARM_SNOOZED =       "com.simplemobiletools.ALARM_SNOOZED"
+const val ALARM_IS_ACTIVE =     "com.simplemobiletools.ALARM_IS_ACTIVE"
+const val NEW_ALARM =           "com.simplemobiletools.NEW_ALARM"
+const val ALARM_CANCELED =       "com.simplemobiletools.ALARM_CANCELED"
 fun getDefaultTimeZoneTitle(id: Int) = getAllTimeZones().firstOrNull { it.id == id }?.title ?: ""
 
 fun getMSTillNextMinute(): Long {

@@ -70,6 +70,8 @@
     </string>
 
     <string name="silent_alarm_dialog_title">What is a silent alarm?</string>
+    <string name="update_child_alarm_title">Update Silent Alarms?</string>
+    <string name="update_child_alarm_info">Update silent alarms relative to the new alarm time?</string>
 
 
     <!--

@@ -15,7 +15,9 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.extensions.*
+import com.simplemobiletools.clock.helpers.ALARM_DISABLED
 import com.simplemobiletools.clock.helpers.ALARM_ID
+import com.simplemobiletools.clock.helpers.ALARM_SNOOZED
 import com.simplemobiletools.clock.helpers.getPassedSeconds
 import com.simplemobiletools.clock.models.Alarm
 import com.simplemobiletools.commons.extensions.*
@@ -126,14 +128,14 @@ class ReminderActivity : SimpleActivity() {
                             reminder_draggable.performHapticFeedback()
                             didVibrate = true
                             Intent().also { intent ->
-                                intent.setAction("com.simplemobiletools.ALARM_DISABLED")
+                                intent.action = ALARM_DISABLED
                                 intent.putExtra("hours", alarm?.timeInMinutes!! / 60)
                                 intent.putExtra("minutes", alarm?.timeInMinutes!! % 60)
                                 intent.putExtra("days", alarm?.days)
                                 intent.putExtra("id", alarm?.id)
                                 intent.putExtra("label", alarm?.label)
                                 sendBroadcast(intent)
-                                Log.i("SENT_BROADCAST", "ALARM_DISABLED")
+                                Log.i("SENT_BROADCAST", ALARM_DISABLED)
                             }
                             finishActivity()
                         }
@@ -145,16 +147,6 @@ class ReminderActivity : SimpleActivity() {
                         if (!didVibrate) {
                             reminder_draggable.performHapticFeedback()
                             didVibrate = true
-                        }
-                        Intent().also { intent ->
-                            intent.setAction("com.simplemobiletools.ALARM_SNOOZED")
-                            intent.putExtra("hours", alarm?.timeInMinutes!! / 60)
-                            intent.putExtra("minutes", alarm?.timeInMinutes!! % 60)
-                            intent.putExtra("days", alarm?.days)
-                            intent.putExtra("id", alarm?.id)
-                            intent.putExtra("label", alarm?.label)
-                            sendBroadcast(intent)
-                            Log.i("SENT_BROADCAST", "ALARM_SNOOZED")
                         }
                             snoozeAlarm()
 
@@ -231,6 +223,16 @@ class ReminderActivity : SimpleActivity() {
     }
 
     private fun snoozeAlarm() {
+        Intent().also { intent ->
+            intent.action = ALARM_SNOOZED
+            intent.putExtra("hours", alarm?.timeInMinutes!! / 60)
+            intent.putExtra("minutes", alarm?.timeInMinutes!! % 60)
+            intent.putExtra("days", alarm?.days)
+            intent.putExtra("id", alarm?.id)
+            intent.putExtra("label", alarm?.label)
+            sendBroadcast(intent)
+            Log.i("SENT_BROADCAST", ALARM_SNOOZED)
+        }
         destroyPlayer()
         if (config.useSameSnooze) {
             setupAlarmClock(alarm!!, config.snoozeTime * MINUTE_SECONDS)

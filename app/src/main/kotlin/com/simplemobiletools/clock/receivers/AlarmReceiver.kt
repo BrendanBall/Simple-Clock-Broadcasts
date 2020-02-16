@@ -13,7 +13,9 @@ import androidx.core.app.NotificationCompat
 import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.activities.ReminderActivity
 import com.simplemobiletools.clock.extensions.*
+import com.simplemobiletools.clock.helpers.ALARM_GOING_TO_RING
 import com.simplemobiletools.clock.helpers.ALARM_ID
+import com.simplemobiletools.clock.helpers.ALARM_IS_ACTIVE
 import com.simplemobiletools.clock.helpers.ALARM_NOTIF_ID
 import com.simplemobiletools.commons.helpers.isOreoPlus
 
@@ -25,14 +27,14 @@ class AlarmReceiver : BroadcastReceiver() {
         val alarm = context.dbHelper.getAlarmWithId(id)
         if (alarm!!.isChild) {
             Intent().also { intent ->
-                intent.action = "com.simplemobiletools.ALARM_GOING_TO_RING"
+                intent.action = ALARM_GOING_TO_RING
                 intent.putExtra("hours", alarm?.timeInMinutes / 60)
                 intent.putExtra("minutes", alarm?.timeInMinutes % 60)
                 intent.putExtra("days", alarm?.days)
                 intent.putExtra("id", alarm?.id)
                 intent.putExtra("label", alarm?.label)
                 context.sendBroadcast(intent)
-                Log.i("SENT_BROADCAST", "ALARM_GOING_TO_RING")
+                Log.i("SENT_BROADCAST", ALARM_GOING_TO_RING)
             }
         } else {
             val alarm = context.dbHelper.getAlarmWithId(id) ?: return
@@ -74,14 +76,13 @@ class AlarmReceiver : BroadcastReceiver() {
             }
         }
             Intent().also { intent ->
-                intent.action = "com.simplemobiletools.ALARM_IS_ACTIVE"
+                intent.action = ALARM_IS_ACTIVE
                 intent.putExtra("hours", alarm?.timeInMinutes / 60)
                 intent.putExtra("minutes", alarm?.timeInMinutes % 60)
                 intent.putExtra("days", alarm.days)
                 intent.putExtra("id", alarm.id)
                 intent.putExtra("label", alarm?.label)
                 context.sendBroadcast(intent)
-                Log.i("SENT_BROADCAST", "ALARM_IS_RINGING")
         }
     }
     }

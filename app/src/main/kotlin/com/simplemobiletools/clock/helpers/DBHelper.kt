@@ -120,7 +120,7 @@ class DBHelper private constructor(val context: Context) : SQLiteOpenHelper(cont
 
     fun getChildAlarms(id: Int) = getAllAlarms().filter { it.parentId == id }
 
-    fun getAlarms() = getAllAlarms() .filter { it.parentId == -1}
+    fun getAlarms() = getAllAlarms().filter { it.parentId == -1}
 
     fun getAllAlarms(): ArrayList<Alarm> {
         val alarms = ArrayList<Alarm>()

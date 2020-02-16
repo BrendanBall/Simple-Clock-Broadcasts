@@ -3,6 +3,8 @@ package com.simplemobiletools.clock.dialogs
 import android.app.TimePickerDialog
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
+import android.util.Log
+import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +13,7 @@ import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.activities.SimpleActivity
 import com.simplemobiletools.clock.adapters.ChildAlarmsAdapter
 import com.simplemobiletools.clock.extensions.*
+import com.simplemobiletools.clock.helpers.DBHelper
 import com.simplemobiletools.clock.helpers.PICK_AUDIO_FILE_INTENT_ID
 import com.simplemobiletools.clock.models.Alarm
 import com.simplemobiletools.commons.dialogs.SelectAlarmSoundDialog
@@ -19,12 +22,15 @@ import com.simplemobiletools.commons.helpers.ALARM_SOUND_TYPE_ALARM
 import com.simplemobiletools.commons.models.AlarmSound
 import kotlinx.android.synthetic.main.dialog_edit_alarm.view.*
 import kotlin.collections.ArrayList
+import kotlin.math.abs
 
-class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callback: (alarmId: Int) -> Unit) {
-    private val view = activity.layoutInflater.inflate(R.layout.dialog_edit_alarm, null)
+class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callback: (alarmId: Int) -> Unit)  {
+
+    private val view: View = activity.layoutInflater.inflate(R.layout.dialog_edit_alarm, null)
     private val textColor = activity.config.textColor
     var childAlarmsAdapter: ChildAlarmsAdapter
     private var cachedChildAlarms: ArrayList<Alarm> = arrayListOf()
+    private var cachedAlarmTime = alarm.timeInMinutes
     init {
         updateAlarmTime()
         view.apply {
@@ -160,10 +166,25 @@ class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callba
                 }
     }
 
+
     private val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+        if(DBHelper.dbInstance?.getChildAlarms(alarm.id)?.isNotEmpty()!!){
+            UpdateChildAlarmDialog(activity){ response ->
+                childAlarmsAdapter.items.forEach{
+                    var diff = abs(cachedAlarmTime - alarm.timeInMinutes)
+                    if( alarm.timeInMinutes > cachedAlarmTime)
+                        it.timeInMinutes = it.timeInMinutes + diff
+                    else
+                        it.timeInMinutes = it.timeInMinutes - diff
+                }
+                cachedAlarmTime = alarm.timeInMinutes
+            childAlarmsAdapter.notifyDataSetChanged()
+            }
+        }
         alarm.timeInMinutes = hourOfDay * 60 + minute
         updateAlarmTime()
     }
+
 
     private fun updateAlarmTime() {
         view.edit_alarm_time.text = activity.getFormattedTime(alarm.timeInMinutes * 60, false, true)

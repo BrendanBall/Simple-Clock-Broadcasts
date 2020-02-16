@@ -5,7 +5,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.activities.MainActivity
 import com.simplemobiletools.clock.activities.SimpleActivity
 import com.simplemobiletools.clock.adapters.AlarmsAdapter
@@ -21,9 +20,11 @@ import kotlinx.android.synthetic.main.fragment_alarm.view.*
 import java.util.*
 import kotlin.math.pow
 
+
+
 class AlarmFragment : Fragment(), ToggleAlarmInterface {
     private var alarms = ArrayList<Alarm>()
-    private var currentEditAlarmDialog: EditAlarmDialog? = null
+    var currentEditAlarmDialog: EditAlarmDialog? = null
 
     private var storedTextColor = 0
 
@@ -31,7 +32,7 @@ class AlarmFragment : Fragment(), ToggleAlarmInterface {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         storeStateVariables()
-        view = inflater.inflate(R.layout.fragment_alarm, container, false) as ViewGroup
+        view = inflater.inflate(com.simplemobiletools.clock.R.layout.fragment_alarm, container, false) as ViewGroup
         return view
     }
 
@@ -74,7 +75,10 @@ class AlarmFragment : Fragment(), ToggleAlarmInterface {
     }
 
     private fun setupAlarms() {
-        alarms = ArrayList(context?.dbHelper?.getAlarms()) ?: return
+        //alarms = ArrayList(context?.dbHelper?.getAlarms()) ?: return
+        //val alarms = ArrayList<Alarm>(context?.dbHelper?.getAlarms())
+        val alarms = arrayListOf<Alarm>()
+        context?.dbHelper?.getAlarms()?.let { alarms.addAll(it) }
         val currAdapter = view.alarms_list.adapter
         if (currAdapter == null) {
             AlarmsAdapter(activity as SimpleActivity, alarms, this, view.alarms_list) {
@@ -102,7 +106,7 @@ class AlarmFragment : Fragment(), ToggleAlarmInterface {
             alarm.isEnabled = isEnabled
             checkAlarmState(alarm)
         } else {
-            activity!!.toast(R.string.unknown_error_occurred)
+            activity!!.toast(com.simplemobiletools.clock.R.string.unknown_error_occurred)
         }
         context!!.updateWidgets()
     }

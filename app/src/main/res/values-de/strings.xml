@@ -69,7 +69,8 @@
         - id - Einzigartige ID
     </string>
     <string name="silent_alarm_dialog_title">Was ist ein stiller Alarm?</string>
-
+    <string name="update_child_alarm_title">Stille Alarme aktualisieren?</string>
+    <string name="update_child_alarm_info">Zeiten der stillen Alarme relativ zur neuen Alarmzeit anpassen?</string>
     <!--
         Haven't found some strings? There's more at
         https://github.com/SimpleMobileTools/Simple-Commons/tree/master/commons/src/main/res
