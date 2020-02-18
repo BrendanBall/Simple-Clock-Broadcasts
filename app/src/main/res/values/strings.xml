@@ -74,6 +74,9 @@
     <string name="update_child_alarm_info">Update silent alarms relative to the new alarm time?</string>
     <string name="intent_alarm_updated">Updated Alarm \"%1$s\"</string>
     <string name="intent_alarm_updated_error">Error updating Alarm \"%1$s\"</string>
+    <string name="fork_info" >This is a fork of simple mobile tools clock adding extra features.\n\n If you have a feature request or an issue, please go here: https://github.com/coxtor/Simple-Clock-Broadcasts.
+    </string>
+    <string name="my_email_coxtor">https://github.com/coxtor/Simple-Clock-Broadcasts</string>
 
 
     <!--

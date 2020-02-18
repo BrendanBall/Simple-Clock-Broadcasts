@@ -15,9 +15,7 @@ import com.simplemobiletools.clock.extensions.getNextAlarm
 import com.simplemobiletools.clock.extensions.rescheduleEnabledAlarms
 import com.simplemobiletools.clock.helpers.*
 import com.simplemobiletools.commons.extensions.*
-import com.simplemobiletools.commons.helpers.LICENSE_NUMBER_PICKER
-import com.simplemobiletools.commons.helpers.LICENSE_RTL
-import com.simplemobiletools.commons.helpers.LICENSE_STETHO
+import com.simplemobiletools.commons.helpers.*
 import com.simplemobiletools.commons.models.FAQItem
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -186,7 +184,15 @@ class MainActivity : SimpleActivity() {
                 FAQItem(R.string.faq_2_title_commons, R.string.faq_2_text_commons),
                 FAQItem(R.string.faq_6_title_commons, R.string.faq_6_text_commons)
         )
-
-        startAboutActivity(R.string.app_name, licenses, BuildConfig.VERSION_NAME, faqItems, true)
+        Intent(applicationContext, AboutActivity::class.java).apply {
+            putExtra(APP_ICON_IDS, getAppIconIDs())
+            putExtra(APP_LAUNCHER_NAME, getAppLauncherName())
+            putExtra(APP_NAME, getString(R.string.app_name))
+            putExtra(APP_LICENSES, licenses)
+            putExtra(APP_VERSION_NAME, BuildConfig.VERSION_NAME)
+            putExtra(APP_FAQ, faqItems)
+            putExtra(SHOW_FAQ_BEFORE_MAIL, false)
+            startActivity(this)
+        }
     }
 }
