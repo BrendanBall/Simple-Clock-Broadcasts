@@ -72,6 +72,8 @@
     <string name="silent_alarm_dialog_title">What is a silent alarm?</string>
     <string name="update_child_alarm_title">Update Silent Alarms?</string>
     <string name="update_child_alarm_info">Update silent alarms relative to the new alarm time?</string>
+    <string name="intent_alarm_updated">Updated Alarm \"%1$s\"</string>
+    <string name="intent_alarm_updated_error">Error updating Alarm \"%1$s\"</string>
 
 
     <!--
