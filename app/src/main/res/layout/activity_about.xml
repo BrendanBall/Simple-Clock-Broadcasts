@@ -36,7 +36,7 @@
             android:id="@+id/about_faq_label"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/about_email"
+            android:layout_below="@+id/about_fork"
             android:layout_marginTop="@dimen/activity_margin"
             android:text="@string/before_asking_question"/>
 
