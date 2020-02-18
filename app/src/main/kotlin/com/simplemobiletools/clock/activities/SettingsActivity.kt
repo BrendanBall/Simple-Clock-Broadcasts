@@ -22,7 +22,7 @@ class SettingsActivity : SimpleActivity() {
     override fun onResume() {
         super.onResume()
 
-        setupPurchaseThankYou()
+        //setupPurchaseThankYou()
         setupCustomizeColors()
         setupUseEnglish()
         setupPreventPhoneFromSleeping()
@@ -49,10 +49,10 @@ class SettingsActivity : SimpleActivity() {
     }
 
     private fun setupPurchaseThankYou() {
-        settings_purchase_thank_you_holder.beVisibleIf(!isThankYouInstalled())
-        settings_purchase_thank_you_holder.setOnClickListener {
-            launchPurchaseThankYouIntent()
-        }
+//        settings_purchase_thank_you_holder.beVisibleIf(false)
+//        settings_purchase_thank_you_holder.setOnClickListener {
+//            //launchPurchaseThankYouIntent()
+//        }
     }
 
     private fun setupCustomizeColors() {
