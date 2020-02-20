@@ -46,21 +46,25 @@ Silent alarms
 * do not emit broadcasts
 
 Configuration example using the app broadcast2mqtt
-
-<img alt="Tasker Config" src="i/broadcast2mqtt_config_example.png" width="80" />
-
+<p align="center">
+<img alt="Tasker Config" src="i/broadcast2mqtt_config_example.png" width="400" />
+</p>
 
 ## Alter alarms via intent
 This app listens for intents sent to "android.intent.action.SEND" to the package "com.simplemobiletools.clock". The alarm id can be obtained in the UI **after** storing the alarm the first time.
-
-<img alt="Tasker Config" src="i/alarm_example.png" width="80" />
-
+<p align="center">
+<img alt="Tasker Config" src="i/alarm_example.png" width="400" />
+</p>
 The Intent may have following payload:
 
 Following modes options are supported: 
+
 **INSERT**: Create new alarm
+
 **UPDATE**: Modify existing alarm
+
 **DISABLE**: Disable alarm
+
 **ENABLE**: Enable alarm 
 
 ### Payloads
@@ -103,35 +107,9 @@ Following modes options are supported:
 
 ## Tasker Config Example
 In Tasker, create a "new intent" action in the "Tasks" section with the config as shown in the image below.
-<img alt="Tasker Config" src="i/tasker_config_example.png" width="80" />
 
-
-
-# Original Simple Clock readme
-<img alt="Logo" src="app/src/main/res/mipmap-xxxhdpi/ic_launcher.png" width="80" />
-
-The app has multiple functions related to timing.
-
-At the clock you can enable displaying times from other timezones, or use the simple, but customizable clock widget. The text color of the widget can be customized, as well as the color and the alpha of the background.
-
-The alarm contains all the expected features as day selecting, vibration toggling, ringtone selecting, snooze or adding a custom label.
-
-With the stopwatch you can easily measure a longer period of time, or individual laps. You can sort the laps by lap time, it contains optional vibrations on button presses too, just to let you know that the button was pressed, even if you cannot look at the device.
-
-You can easily setup a timer to be notified of some event. You can both change its ringtone, or toggle vibrations.
-
-Additional features include preventing the device from falling asleep while the app is in foreground, or displaying some tabs in fullscreen view.
-
-Contains no ads or unnecessary permissions. It is fully opensource, provides customizable colors.
-
-This app is just one piece of a bigger series of apps. You can find the rest of them at https://www.simplemobiletools.com
-
-<a href='https://play.google.com/store/apps/details?id=com.simplemobiletools.clock'><img src='https://simplemobiletools.com/assets/images/google-play.png' alt='Get it on Google Play' height='45' /></a>
-<a href='https://f-droid.org/packages/com.simplemobiletools.clock'><img src='https://simplemobiletools.com/assets/images/f-droid.png' alt='Get it on F-Droid' height='45' /></a>
-
-<div style="display:flex;">
-<img alt="App image" src="fastlane/metadata/android/en-US/images/phoneScreenshots/app_1.jpg" width="30%">
-<img alt="App image" src="fastlane/metadata/android/en-US/images/phoneScreenshots/app_2.jpg" width="30%">
-<img alt="App image" src="fastlane/metadata/android/en-US/images/phoneScreenshots/app_3.jpg" width="30%">
-</div>
-
+<p align="center">
+<img alt="Tasker Config" src="i/tasker_config_example.png" width="400" />
+</p>
+# Credits
+Credits go to the original creator of this app: (https://github.com/SimpleMobileTools/Simple-Clock)[https://github.com/SimpleMobileTools/Simple-Clock]
