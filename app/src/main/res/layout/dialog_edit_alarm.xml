@@ -12,6 +12,11 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/activity_margin">
 
+    <RelativeLayout
+        android:id="@+id/edit_alarm_time_holder"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
         <com.simplemobiletools.commons.views.MyTextView
             android:id="@+id/edit_alarm_time"
             android:layout_width="wrap_content"
@@ -20,11 +25,26 @@
             android:textSize="@dimen/alarm_text_size"
             tools:text="07:00"/>
 
+        <com.simplemobiletools.commons.views.MyTextView
+            android:id="@+id/tv_child_alarm_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="false"
+            android:layout_toRightOf="@+id/edit_alarm_time"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:text=""
+            android:layout_marginLeft="20dp"
+            android:textSize="@dimen/middle_text_size" />
+
+    </RelativeLayout>
+
         <LinearLayout
             android:id="@+id/edit_alarm_days_holder"
             android:layout_width="match_parent"
             android:layout_height="@dimen/alarm_day_size"
-            android:layout_below="@+id/edit_alarm_time"
+            android:layout_below="@+id/edit_alarm_time_holder"
             android:layout_marginTop="@dimen/medium_margin"
             android:layout_marginBottom="@dimen/medium_margin"
             android:orientation="horizontal"/>

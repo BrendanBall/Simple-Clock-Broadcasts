@@ -1,6 +1,7 @@
 package com.simplemobiletools.clock.dialogs
 
 import android.app.TimePickerDialog
+import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.media.AudioManager
 import android.util.Log
@@ -66,6 +67,9 @@ class EditAlarmDialog(val activity: SimpleActivity, val alarm: Alarm, val callba
                 edit_alarm_vibrate.toggle()
                 alarm.vibrate = edit_alarm_vibrate.isChecked
             }
+
+            if (alarm.id != 0 || activity.dbHelper.getAlarmWithId(alarm.id) != null)
+                tv_child_alarm_id.text="Id. "+alarm.id
 
             edit_alarm_label_image.applyColorFilter(textColor)
             edit_alarm_label.setText(alarm.label)

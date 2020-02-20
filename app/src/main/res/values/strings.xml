@@ -77,6 +77,9 @@
     <string name="fork_info" >This is a fork of simple mobile tools clock adding extra features.\n\n If you have a feature request or an issue, please go here: https://github.com/coxtor/Simple-Clock-Broadcasts.
     </string>
     <string name="my_email_coxtor">https://github.com/coxtor/Simple-Clock-Broadcasts</string>
+    <string name="must_specify_mode">Must specify mode</string>
+    <string name="must_specify_all_parameters">Error must specify all parameters (LABEL,MINUTES,HOURS,DAYS)</string>
+    <string name="save_for_id">Save for ID</string>
 
 
     <!--

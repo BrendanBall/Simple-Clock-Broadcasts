@@ -5,7 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
+
 import androidx.recyclerview.widget.RecyclerView
 import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.extensions.config
@@ -13,8 +13,6 @@ import com.simplemobiletools.clock.extensions.getFormattedTime
 import com.simplemobiletools.clock.models.Alarm
 import com.simplemobiletools.commons.extensions.getDialogTheme
 import kotlinx.android.synthetic.main.item_child_alarm.view.*
-import com.simplemobiletools.commons.extensions.toast
-import kotlin.math.abs
 
 class ChildAlarmsAdapter (var items: List<Alarm>, var shownItems: List<Int>, val parentAlarm: Alarm, val context: Context) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -41,7 +39,10 @@ class ChildAlarmsAdapter (var items: List<Alarm>, var shownItems: List<Int>, val
         holder.itemView.tv_child_alarm_info.setTextColor(context!!.config.textColor)
         holder.itemView.tv_child_alarm_info.setText(time)
         holder.itemView.switch_toggle_silent_alarm.isChecked = childAlarm.isEnabled
-
+        if(childAlarm.id != 0)
+            holder.itemView.tv_child_alarm_id.text="ID. "+childAlarm.id
+        else
+            holder.itemView.tv_child_alarm_id.text= context.resources.getString(R.string.save_for_id)
         val timeSetListener = TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
             childAlarm.timeInMinutes = hourOfDay * 60 + minute
             var time = context.getFormattedTime(childAlarm.timeInMinutes *60, false, true)
