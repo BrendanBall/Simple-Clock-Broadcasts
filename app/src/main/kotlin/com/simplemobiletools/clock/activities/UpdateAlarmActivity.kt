@@ -27,8 +27,11 @@ class UpdateAlarmActivity : SimpleActivity() {
                 when (mode){
                     "UPDATE" -> {
                         var alarmId = intent.getIntExtra("ALARM_ID", -1)
-                        if (alarmId == -1)
+                        if (alarmId == -1){
+                            Toast.makeText(applicationContext, "Error, please verify payload", Toast.LENGTH_SHORT).show()
+                            finish()
                             return
+                        }
                         var alarm: Alarm? = applicationContext.dbHelper?.getAlarmWithId(alarmId) ?: return
 
                         var cachedAlarmTime = alarm!!.timeInMinutes
@@ -85,8 +88,9 @@ class UpdateAlarmActivity : SimpleActivity() {
                         var hours = intent.getIntExtra("HOURS", -1)
                         var days = intent.getIntExtra("DAYS", -1)
 
-                        if (label.isNullOrBlank() || minutes == -1 || hours == -1 || days == -1){
+                        if (label.isNullOrBlank() || minutes == -1 || hours == -1 ){//|| days == -1){
                             Toast.makeText(applicationContext, applicationContext.getString(R.string.must_specify_all_parameters), Toast.LENGTH_LONG).show()
+                            finish()
                             return
                         }
 
@@ -105,10 +109,26 @@ class UpdateAlarmActivity : SimpleActivity() {
                     "DELETE" ->{
                         //todo
                     }
+                    "ENABLE" -> {
+                        var alarmId = intent.getIntExtra("ALARM_ID", -1)
+                        if (alarmId == -1){
+                            Toast.makeText(applicationContext, "Error, please verify payload", Toast.LENGTH_SHORT).show()
+                            finish()
+                            return
+                        }
+                        var alarm: Alarm? = applicationContext.dbHelper?.getAlarmWithId(alarmId) ?: return
+                        alarm!!.isEnabled = true
+                        applicationContext.dbHelper.updateAlarmEnabledState(alarm.id, alarm.isEnabled)
+                        applicationContext.cancelAlarmClock(alarm)
+                    }
                     "DISABLE" -> {
                         var alarmId = intent.getIntExtra("ALARM_ID", -1)
-                        if (alarmId == -1)
+                        if (alarmId == -1){
+                            Toast.makeText(applicationContext, "Error, please verify payload", Toast.LENGTH_SHORT).show()
+                            finish()
                             return
+                        }
+
                         var alarm: Alarm? = applicationContext.dbHelper?.getAlarmWithId(alarmId) ?: return
                         alarm!!.isEnabled = false
                         applicationContext.dbHelper.updateAlarmEnabledState(alarm.id, alarm.isEnabled)
