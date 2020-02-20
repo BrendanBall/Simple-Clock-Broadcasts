@@ -55,7 +55,6 @@ This app listens for intents sent to "android.intent.action.SEND" to the package
 <p align="center">
 <img alt="Tasker Config" src="i/alarm_example.png" width="400" />
 </p>
-The Intent may have following payload:
 
 Following modes options are supported: 
 
@@ -70,26 +69,29 @@ Following modes options are supported:
 ### Payloads
 **MODE**: INSERT 
 
-| Payload  | Value                       |Required |
-|--------- |-----------------------------|---------|
-| MODE     | (INSERT | UPDATE | DISABLE) | YES     |
-| ALARM_ID | INT                         | NO      |         
-| LABEL    | String                      | YES     |
-| MINUTES  | INT                         | YES     |
-| HOURS    | INT                         | YES     |
+| Payload  | Value                       |Required | Description   |
+|--------- |-----------------------------|---------|---------------|
+| MODE     | (INSERT | UPDATE | DISABLE) | YES     | Action to be executed|
+| LABEL    | String                      | YES     | Alarm label   | 
+| MINUTES  | INT                         | YES     | Alarm minutes |
+| HOURS    | INT                         | YES     | Alarm hours   |
+
+
+
 
 #### Example ADB command
     adb shell am start -a android.intent.action.SEND -t text/plain --es MODE INSERT --es LABEL "NEW_TEST_INTENT_LABEL_2" --ei "HOURS" 25 --ei "MINUTES" 65 com.simplemobiletools.clock
 
 **MODE**: UPDATE
 
-| Payload | Value | Required |
-|---------|-------|----------|
-|MODE     |UPDATE | YES      |
-|ALARM_ID | INT	  | YES      |
-|LABEL    | String| NO       |
-|MINUTES  | INT   | NO       |
-|HOURS    | INT   | NO       |
+| Payload | Value | Required | Description   |
+|---------|-------|----------|---------------|
+|MODE     |UPDATE | YES      | Action to be executed|
+|ALARM_ID | INT	  | YES      | ID of an ALARM|
+|LABEL    | String| NO       | Alarm label   | 
+|MINUTES  | INT   | NO       | Alarm minutes |
+|HOURS    | INT   | NO       | Alarm hours   |
+|UPDATE_CHILDREN| BOOLEAN (DEFAULT FALSE)| NO      | If child alarms exist, update them relative to the new alarm time|
 
 #### Example ADB command
     adb shell am start -a android.intent.action.SEND -t text/plain  --ei ALARM_ID 1 --es MODE UPDATE --es LABEL "NEW_TEST_INTENT_LABEL_3" --ei HOURS 25 --ei "MINUTES" 65 com.simplemobiletools.clock
@@ -111,5 +113,55 @@ In Tasker, create a "new intent" action in the "Tasks" section with the config a
 <p align="center">
 <img alt="Tasker Config" src="i/tasker_config_example.png" width="400" />
 </p>
+
+
+## Home-Assistant Example Automations
+
+
+```
+- alias: 'Wake up light'
+  trigger:
+    - platform: mqtt
+      topic: 'android/broadcast/redmi-note-3'
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ "ALARM_GOING_TO_RING" in trigger.payload_json.action }}'
+      - condition: template
+        value_template: '{{ "get_up_work" in trigger.payload_json.label }}'    
+  action:
+    - service: script.sunrise
+```
+
+### Power on morning devices
+This automation is triggered as soon as I disable the Alarm displayed when it is ringing on the phone. Again the conditions are a MQTT message containing the action "ALARM_DISABLED" with the alarm label "get_up_work".
+
+```
+
+- alias: 'Alarm power on morning devices'
+  trigger:
+    - platform: mqtt
+      topic: 'android/broadcast/redmi-note-3'
+  condition:
+    condition: and
+    conditions:
+      - condition: template
+        value_template: '{{ "ALARM_DISABLED" in trigger.payload_json.action }}'
+      - condition: template
+        value_template: '{{ "get_up_work" in trigger.payload_json.label }}'
+  action:
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.select_activity
+        option: "Nicht gesetzt"
+    - service: input_select.select_option
+      data:
+        entity_id: input_select.select_activity
+        option: "Aufstehen"
+    - service: scene.turn_on
+      entity_id: scene.comfortable
+```
+
 # Credits
-Credits go to the original creator of this app: (https://github.com/SimpleMobileTools/Simple-Clock)[https://github.com/SimpleMobileTools/Simple-Clock]
+Credits go to the original creator of this app: [https://github.com/SimpleMobileTools/Simple-Clock](https://github.com/SimpleMobileTools/Simple-Clock)
