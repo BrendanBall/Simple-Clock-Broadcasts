@@ -68,7 +68,7 @@ Following modes options are supported:
 **ENABLE**: Enable alarm 
 
 ### Payloads
-**MODE**: INSERT
+**MODE**: INSERT 
 
 | Payload  | Value                       |Required |
 |--------- |-----------------------------|---------|
