@@ -22,6 +22,7 @@ import com.simplemobiletools.clock.activities.ReminderActivity
 import com.simplemobiletools.clock.activities.SimpleActivity
 import com.simplemobiletools.clock.dialogs.MyTimePickerDialogDialog
 import com.simplemobiletools.clock.extensions.*
+import com.simplemobiletools.clock.helpers.HomeAssistantApi
 import com.simplemobiletools.clock.helpers.PICK_AUDIO_FILE_INTENT_ID
 import com.simplemobiletools.clock.helpers.TIMER_NOTIF_ID
 import com.simplemobiletools.commons.dialogs.SelectAlarmSoundDialog

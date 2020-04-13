@@ -4,10 +4,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
-import com.simplemobiletools.clock.fragments.AlarmFragment
-import com.simplemobiletools.clock.fragments.ClockFragment
-import com.simplemobiletools.clock.fragments.StopwatchFragment
-import com.simplemobiletools.clock.fragments.TimerFragment
+import com.simplemobiletools.clock.fragments.*
 import com.simplemobiletools.clock.helpers.TABS_COUNT
 import com.simplemobiletools.clock.helpers.TAB_ALARM
 import com.simplemobiletools.clock.helpers.TAB_CLOCK
@@ -35,6 +32,7 @@ class ViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
         1 -> AlarmFragment()
         2 -> StopwatchFragment()
         3 -> TimerFragment()
+        4 -> LightFragment()
         else -> throw RuntimeException("Trying to fetch unknown fragment id $position")
     }
 

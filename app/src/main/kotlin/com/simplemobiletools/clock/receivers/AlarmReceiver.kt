@@ -13,10 +13,7 @@ import androidx.core.app.NotificationCompat
 import com.simplemobiletools.clock.R
 import com.simplemobiletools.clock.activities.ReminderActivity
 import com.simplemobiletools.clock.extensions.*
-import com.simplemobiletools.clock.helpers.ALARM_GOING_TO_RING
-import com.simplemobiletools.clock.helpers.ALARM_ID
-import com.simplemobiletools.clock.helpers.ALARM_IS_ACTIVE
-import com.simplemobiletools.clock.helpers.ALARM_NOTIF_ID
+import com.simplemobiletools.clock.helpers.*
 import com.simplemobiletools.commons.helpers.isOreoPlus
 
 class AlarmReceiver : BroadcastReceiver() {
@@ -84,6 +81,9 @@ class AlarmReceiver : BroadcastReceiver() {
                 intent.putExtra("label", alarm?.label)
                 context.sendBroadcast(intent)
         }
-    }
+            HomeAssistantApi.getInstance(context).turnOnLight("light.bedroom_light")
+
+
+        }
     }
 }

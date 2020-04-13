@@ -16,7 +16,7 @@ const val ALARM_MAX_REMINDER_SECS = "alarm_max_reminder_secs"
 const val USE_TEXT_SHADOW = "use_text_shadow"
 const val INCREASE_VOLUME_GRADUALLY = "increase_volume_gradually"
 
-const val TABS_COUNT = 4
+const val TABS_COUNT = 5
 const val EDITED_TIME_ZONE_SEPARATOR = ":"
 const val ALARM_ID = "alarm_id"
 const val DEFAULT_ALARM_MINUTES = 480
@@ -36,6 +36,7 @@ const val TAB_CLOCK = 0
 const val TAB_ALARM = 1
 const val TAB_STOPWATCH = 2
 const val TAB_TIMER = 3
+const val TAB_LIGHT = 4
 
 const val SORT_BY_LAP = 1
 const val SORT_BY_LAP_TIME = 2
